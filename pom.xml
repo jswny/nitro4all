@@ -11,9 +11,26 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <discord4j.version>3.0.9</discord4j.version>
+        <slf4j.version>1.7.28</slf4j.version>
+
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.discord4j</groupId>
+            <artifactId>discord4j-core</artifactId>
+            <version>${discord4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
