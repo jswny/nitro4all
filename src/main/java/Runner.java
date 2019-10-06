@@ -41,7 +41,7 @@ public class Runner {
                 .filter(msg -> !state.getNitroCheck() || !isNitro(msg))
                 .map(Runner::buildMessageEmojiTuple)
                 .filter(Runner::doesMessageEmojiTupleContainNitroEmoji)
-                .flatMap(Runner::reactWithNitroEmoji)
+                .flatMap(Runner::reactWithNitroEmojis)
                 .subscribe();
 
         client.login().block();
@@ -105,16 +105,16 @@ public class Runner {
                 .orElse(false);
     }
 
-    static Mono<Void> reactWithNitroEmoji(Tuple2<Message, Flux<GuildEmoji>> tuple2) {
-        GuildEmoji matchingEmoji = tuple2
+    static Flux<Void> reactWithNitroEmojis(Tuple2<Message, Flux<GuildEmoji>> tuple2) {
+         Flux<Void> result = tuple2
                 .getT2()
                 .filter(emoji -> tuple2
                         .getT1()
                         .getContent()
                         .map(content -> content
                                 .contains(emojiIdentifierFromName(emoji.getName()))).orElse(false))
-                .singleOrEmpty() // Fix this, fails when there are multiple matching emojis
-                .block();
-        return tuple2.getT1().addReaction(ReactionEmoji.custom(matchingEmoji));
+                .flatMap(emoji -> tuple2.getT1().addReaction(ReactionEmoji.custom(emoji)));
+
+        return result;
     }
 }
