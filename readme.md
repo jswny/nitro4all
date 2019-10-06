@@ -1,7 +1,10 @@
 # Nitro4All
-Nitro4All is a Discord bot which allows all users to use Nitro animated emojis. It will react to any message containing a Nitro-only emoji from a user who does not have Nitro with the emoji itself.
+Nitro4All is a Discord bot which allows all users to use Nitro (animated) emojis. It will react to any message containing a Nitro-only emoji from a user who does not have Nitro with the emoji itself.
 
 ![Demo GIF](images/demo.gif)
+
+## Clyde Bot
+Since users without Nitro cannot use Nitro emojis directly, they may sometimes get messages from the built-in Discord bot named Clyde
 
 ## Server Setup
 Due to limitations of the [Discord4J bot library](https://github.com/Discord4J/Discord4J), in order for Nitro4All to properly check if a user has Nitro, all Nitro users in the server must be a member of the default, Discord managed `Nitro Booster` role.
@@ -12,3 +15,34 @@ Due to limitations of the [Discord4J bot library](https://github.com/Discord4J/D
   - **Note**: this command is only available to administrators of the server.
 - `/n4a enabled toggle` - Toggles whether the bot is enabled.
   - **Note**: this command is only available to administrators of the server.
+  
+## Running the Bot
+### Maven
+To run Nitro4All with Maven you must have the following dependencies installed:
+- JDK 12
+- Maven
+
+You can run the bot as follows:
+1. Build the JAR: 
+```sh
+mvn clean install
+```
+2. Run the JAR: 
+```sh
+java -jar target/nitro4all-1.0-SNAPSHOT-fat.jar
+```
+  - **Note:** the `DISCORD_TOKEN` environment variable must be set appropriately before running the JAR.
+
+### Docker
+To run Nitro4All with Docker you must have the following dependencies installed:
+- Docker
+
+You can run the bot as follows:
+1. Build the container: 
+```sh
+docker build --tag nitro4all .
+```
+2. Run the container with your token: 
+```sh
+docker run -d --rm -it --name nitro4all -e "DISCORD_TOKEN=<TOKEN>" nitro4all
+```
