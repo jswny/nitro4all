@@ -5,8 +5,6 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.*;
 import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.object.util.Permission;
-import discord4j.core.object.util.PermissionSet;
-import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -19,42 +17,15 @@ public class Runner {
 
         State state = new State();
 
-        client.getEventDispatcher().on(ReadyEvent.class)
-                .subscribe(ready -> System.out.println("Logged in as " + ready.getSelf().getUsername()));
-
-//        client.getEventDispatcher().on(MessageCreateEvent.class)
-//                .map(MessageCreateEvent::getMessage)
-//                .filter(Runner::isMessageInGuild)
-//                .filter(Runner::isAdmin)
-//                .filter(msg -> msg.getContent().map("/n4a ping"::equals).orElse(false))
-//                .flatMap(Message::getChannel)
-//                .flatMap(channel -> channel.createMessage("Pong!"))
-//                .subscribe();
-//
-//        client.getEventDispatcher().on(MessageCreateEvent.class)
-//                .map(MessageCreateEvent::getMessage)
-//                .filter(Runner::isMessageInGuild)
-//                .filter(Runner::isAdmin)
-//                .filter(msg -> msg.getContent().map("/n4a nitrocheck toggle"::equals).orElse(false))
-//                .flatMap(Message::getChannel)
-//                .flatMap(channel -> channel.createMessage("Nitro checking for users is now: " + state.toggleNitroCheck()))
-//                .subscribe();
-//
-//        client.getEventDispatcher().on(MessageCreateEvent.class)
-//                .map(MessageCreateEvent::getMessage)
-//                .filter(Runner::isMessageInGuild)
-//                .filter(msg -> !state.getNitroCheck() || !isNitro(msg))
-//                .map(Runner::buildMessageEmojiTuple)
-//                .filter(Runner::doesMessageEmojiTupleContainNitroEmoji)
-//                .flatMap(Runner::reactWithNitroEmojis)
-//                .subscribe();
-
         registerHandlers(client, state);
 
         client.login().block();
     }
 
     static void registerHandlers(DiscordClient client, State state) {
+        client.getEventDispatcher().on(ReadyEvent.class)
+                .subscribe(ready -> System.out.println("Logged in as " + ready.getSelf().getUsername()));
+
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
                 .filter(Runner::isMessageInGuild)
