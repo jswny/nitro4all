@@ -23,6 +23,7 @@ public class Runner {
 
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
+                .filter(Runner::isAdmin)
                 .filter(msg -> msg.getContent().map("/n4a ping"::equals).orElse(false))
                 .flatMap(Message::getChannel)
                 .flatMap(channel -> channel.createMessage("Pong!"))
