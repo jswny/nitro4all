@@ -137,12 +137,24 @@ public class Runner {
     static Flux<Void> reactWithNitroEmojis(Tuple2<Message, Flux<GuildEmoji>> tuple2) {
          Flux<Void> result = tuple2
                 .getT2()
-                .filter(emoji -> tuple2
-                        .getT1()
-                        .getContent()
-                        .map(content -> content
-                                .contains(emojiIdentifierFromName(emoji.getName()))).orElse(false))
+                .filter(emoji -> doesMessageContainEmoji(emoji, tuple2))
                 .flatMap(emoji -> tuple2.getT1().addReaction(ReactionEmoji.custom(emoji)));
+
+        return result;
+    }
+
+    static boolean doesMessageContainEmoji(GuildEmoji emoji, Tuple2<Message, Flux<GuildEmoji>> tuple2) {
+        var result = tuple2
+                .getT1()
+                .getContent()
+                .map(content -> doesStringContainEmoji(content, emoji))
+                .orElse(false);
+
+        return result;
+    }
+
+    static boolean doesStringContainEmoji(String content, GuildEmoji emoji) {
+        boolean result = content.contains(emojiIdentifierFromName(emoji.getName()));
 
         return result;
     }
