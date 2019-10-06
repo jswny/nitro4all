@@ -70,3 +70,6 @@ fabric.properties
 # Files created as a result of IntelliJ bugs
 .idea/$CACHE_FILE$
 .idea/$PRODUCT_WORKSPACE_FILE$
+
+# Maven
+target/
