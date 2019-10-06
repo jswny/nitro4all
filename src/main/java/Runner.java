@@ -6,6 +6,7 @@ import discord4j.core.object.entity.*;
 import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.object.util.Permission;
 import discord4j.core.object.util.PermissionSet;
+import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -21,8 +22,42 @@ public class Runner {
         client.getEventDispatcher().on(ReadyEvent.class)
                 .subscribe(ready -> System.out.println("Logged in as " + ready.getSelf().getUsername()));
 
+//        client.getEventDispatcher().on(MessageCreateEvent.class)
+//                .map(MessageCreateEvent::getMessage)
+//                .filter(Runner::isMessageInGuild)
+//                .filter(Runner::isAdmin)
+//                .filter(msg -> msg.getContent().map("/n4a ping"::equals).orElse(false))
+//                .flatMap(Message::getChannel)
+//                .flatMap(channel -> channel.createMessage("Pong!"))
+//                .subscribe();
+//
+//        client.getEventDispatcher().on(MessageCreateEvent.class)
+//                .map(MessageCreateEvent::getMessage)
+//                .filter(Runner::isMessageInGuild)
+//                .filter(Runner::isAdmin)
+//                .filter(msg -> msg.getContent().map("/n4a nitrocheck toggle"::equals).orElse(false))
+//                .flatMap(Message::getChannel)
+//                .flatMap(channel -> channel.createMessage("Nitro checking for users is now: " + state.toggleNitroCheck()))
+//                .subscribe();
+//
+//        client.getEventDispatcher().on(MessageCreateEvent.class)
+//                .map(MessageCreateEvent::getMessage)
+//                .filter(Runner::isMessageInGuild)
+//                .filter(msg -> !state.getNitroCheck() || !isNitro(msg))
+//                .map(Runner::buildMessageEmojiTuple)
+//                .filter(Runner::doesMessageEmojiTupleContainNitroEmoji)
+//                .flatMap(Runner::reactWithNitroEmojis)
+//                .subscribe();
+
+        registerHandlers(client, state);
+
+        client.login().block();
+    }
+
+    static void registerHandlers(DiscordClient client, State state) {
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
+                .filter(Runner::isMessageInGuild)
                 .filter(Runner::isAdmin)
                 .filter(msg -> msg.getContent().map("/n4a ping"::equals).orElse(false))
                 .flatMap(Message::getChannel)
@@ -31,6 +66,7 @@ public class Runner {
 
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
+                .filter(Runner::isMessageInGuild)
                 .filter(Runner::isAdmin)
                 .filter(msg -> msg.getContent().map("/n4a nitrocheck toggle"::equals).orElse(false))
                 .flatMap(Message::getChannel)
@@ -39,23 +75,42 @@ public class Runner {
 
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
-                .filter(msg -> !state.getNitroCheck() || !isNitro(msg))
+                .filter(Runner::isMessageInGuild)
+                .filter(Runner::isAdmin)
+                .filter(msg -> msg.getContent().map("/n4a enabled toggle"::equals).orElse(false))
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage("Nitro4All enabled is now: " + state.toggleEnabled()))
+                .subscribe();
+
+        client.getEventDispatcher().on(MessageCreateEvent.class)
+                .map(MessageCreateEvent::getMessage)
+                .filter(Runner::isMessageInGuild)
+                .filter(msg -> state.getEnabled())
+                .filter(msg -> !state.getNitroCheck() || !isMemberNitro(msg))
                 .map(Runner::buildMessageEmojiTuple)
                 .filter(Runner::doesMessageEmojiTupleContainNitroEmoji)
                 .flatMap(Runner::reactWithNitroEmojis)
                 .subscribe();
+    }
 
-        client.login().block();
+
+    static boolean isMessageInGuild(Message msg) {
+        boolean result = msg
+                .getGuild()
+                .hasElement()
+                .blockOptional()
+                .orElse(false);
+
+        return result;
     }
 
     static boolean isAdmin(Message message) {
         boolean result = message
                 .getAuthorAsMember()
                 .flatMap(Member::getBasePermissions)
-                .block()
-                .contains(Permission.ADMINISTRATOR);
-//                .map(permissions -> permissions.contains(Permission.ADMINISTRATOR))
-//                .block();
+                .map(permissions -> permissions.contains(Permission.ADMINISTRATOR))
+                .blockOptional()
+                .orElse(false);
 
         return result;
     }
@@ -72,14 +127,16 @@ public class Runner {
         return ":" + emojiName + ":";
     }
 
-    static boolean isNitro(Message msg) {
+    static boolean isMemberNitro(Message msg) {
         boolean result = msg
                 .getAuthorAsMember()
+                .flatMap(a -> a == null ? Mono.empty() : Mono.just(a))
                 .flatMapMany(Member::getRoles)
                 .filter(Role::isManaged)
                 .map(Role::getName)
                 .any("Nitro Booster"::equals)
-                .block();
+                .blockOptional()
+                .orElse(false);
 
         return result;
     }
