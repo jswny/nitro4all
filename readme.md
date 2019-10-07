@@ -1,10 +1,12 @@
 # Nitro4All
 Nitro4All is a Discord bot which allows all users to use Nitro (animated) emojis. It will react to any message containing a Nitro-only emoji from a user who does not have Nitro with the emoji itself.
 
+Nito4All only works with Nitro emojis from the server in which the message it is reacting to had been sent.
+
 ![Demo GIF](images/demo.gif)
 
 ## Clyde Bot
-Since users without Nitro cannot use Nitro emojis directly, they may sometimes get messages from the built-in Discord bot named Clyde
+Since users without Nitro cannot use Nitro emojis directly, they may sometimes get messages from the built-in Discord bot named "Clyde".
 
 ## Server Setup
 Due to limitations of the [Discord4J bot library](https://github.com/Discord4J/Discord4J), in order for Nitro4All to properly check if a user has Nitro, all Nitro users in the server must be a member of the default, Discord managed `Nitro Booster` role.
