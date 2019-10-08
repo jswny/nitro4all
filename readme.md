@@ -23,7 +23,7 @@ These commands are only available to users who have Administrator permissions.
 Nitro4All can be run directly from Maven without the need to build a JAR using the [Exec Maven Plugin](https://www.mojohaus.org/exec-maven-plugin/). This method is most convenient for local testing.
 
 To run Nitro4All with this plugin, you must have the following dependencies installed:
-- JDK 11
+- JDK 13
 - Maven
 You can run the bot as follows:
 1. Run the bot with the `exec:java` command:
@@ -33,7 +33,7 @@ mvn exec:java
 
 ### Maven
 To run Nitro4All with Maven you must have the following dependencies installed:
-- JDK 11
+- JDK 13
 - Maven
 
 You can run the bot as follows:
