@@ -26,9 +26,9 @@ To run Nitro4All with this plugin, you must have the following dependencies inst
 - JDK 13
 - Maven
 You can run the bot as follows:
-1. Run the bot with the `exec:java` command:
+1. Run the bot with the `exec:java` command including your Discord token:
 ```sh
-mvn exec:java
+DISCORD_TOKEN=<TOKEN> mvn exec:java
 ```
 
 ### Maven
@@ -41,9 +41,9 @@ You can run the bot as follows:
 ```sh
 mvn clean install
 ```
-2. Run the JAR: 
+2. Run the JAR including your Discord token: 
 ```sh
-java -jar target/nitro4all-1.0-SNAPSHOT-fat.jar
+DISCORD_TOKEN=<TOKEN> java -jar target/nitro4all-1.0-SNAPSHOT-fat.jar
 ```
   - **Note:** the `DISCORD_TOKEN` environment variable must be set appropriately before running the JAR.
 
@@ -52,11 +52,7 @@ To run Nitro4All with Docker you must have the following dependencies installed:
 - Docker
 
 You can run the bot as follows:
-1. Build the container: 
+1. Bring the bot up with Docker Compose including your Discord token:
 ```sh
-docker build --tag nitro4all .
-```
-2. Run the container with your token: 
-```sh
-docker run -d --rm -it --name nitro4all -e "DISCORD_TOKEN=<TOKEN>" nitro4all
+DISCORD_TOKEN=<TOKEN> docker-compose up -d
 ```

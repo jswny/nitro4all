@@ -1,4 +1,4 @@
-FROM maven:3.6-jdk-12-alpine
+FROM maven:3.6-jdk-13-alpine
 WORKDIR /nitro4all
 ADD . /nitro4all
 RUN mvn clean install
