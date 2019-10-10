@@ -1,8 +1,11 @@
+addons:
+  ssh_known_hosts:
+    - $DEPLOY_SERVER_IP
+
 before_install:
-- openssl aes-256-cbc -K $encrypted_200a04de1233_key -iv $encrypted_200a04de1233_iv
-  -in deploy_key.enc -out deploy_key -d
-- eval "$(ssh-agent -s)"
-- chmod 600 ./deploy_key
-- echo -e "Host $DEPLOY_SERVER_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- ssh-add ./deploy_key
-- ssh -i ./deploy_key $DEPLOY_SERVER_IP pwd
+  - openssl aes-256-cbc -K $encrypted_200a04de1233_key -iv $encrypted_200a04de1233_iv
+    -in deploy_key.enc -out deploy_key -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 ./deploy_key
+  - ssh-add ./deploy_key
+  - ssh -i ./deploy_key $DEPLOY_SERVER_IP pwd
