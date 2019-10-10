@@ -14,3 +14,9 @@ before_deploy:
   - chmod 600 ./deploy_key
   - ssh-add ./deploy_key
   - ssh -i ./deploy_key joe@159.65.47.132 pwd
+
+deploy:
+  - provider: script
+    script: bash deploy.sh
+    on:
+      branch: master

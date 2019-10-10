@@ -4,5 +4,5 @@ services:
     image: nitro4all
     container_name: nitro4all
     build: .
-    environment:
-      - DISCORD_TOKEN
+    env_file:
+      - release.env
