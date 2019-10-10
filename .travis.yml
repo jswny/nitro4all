@@ -1,3 +1,8 @@
+language: java
+
+jdk:
+  - openjdk13
+
 addons:
   ssh_known_hosts:
     - 159.65.47.132
