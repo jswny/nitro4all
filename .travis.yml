@@ -17,6 +17,6 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: bash ssh joe@159.65.47.132 < deploy.sh
+    script: ssh joe@159.65.47.132 < deploy.sh
     on:
       branch: master
