@@ -13,4 +13,4 @@ before_deploy:
   - eval "$(ssh-agent -s)"
   - chmod 600 ./deploy_key
   - ssh-add ./deploy_key
-  - ssh -i ./deploy_key root@159.65.47.132 pwd
+  - ssh -i ./deploy_key joe@159.65.47.132 pwd
