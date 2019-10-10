@@ -1,6 +1,6 @@
 addons:
   ssh_known_hosts:
-    - $DEPLOY_SERVER_IP
+    - 159.65.47.132
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_200a04de1233_key -iv $encrypted_200a04de1233_iv
