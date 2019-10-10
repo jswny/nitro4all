@@ -1,5 +1,5 @@
 cd /srv/nitro4all
-git pull
+#git pull
 docker-compose down
 docker-compose build
 docker-compose up -d
