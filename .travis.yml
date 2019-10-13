@@ -4,16 +4,17 @@ jdk:
   - openjdk13
 
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_200a04de1233_key -iv $encrypted_200a04de1233_iv -in deploy/deploy_key.enc -out deploy/deploy_key -d
+  - DEPLOY_DIR='deploy'
+  - openssl aes-256-cbc -K $encrypted_200a04de1233_key -iv $encrypted_200a04de1233_iv -in ${DEPLOY_DIR}/deploy_key.enc -out ${DEPLOY_DIR}/deploy_key -d
   - eval "$(ssh-agent -s)"
-  - chmod 600 ./deploy/deploy_key
-  - ssh-add ./deploy/deploy_key
+  - chmod 600 ${DEPLOY_DIR}/deploy_key
+  - ssh-add ${DEPLOY_DIR}/deploy_key
   - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
   - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H 159.65.47.132 2>&1 >> ${TRAVIS_HOME}/.ssh/known_hosts
 
 deploy:
   - provider: script
-    script: ssh ${DEPLOY_USERNAME}@$DEPLOY_SERVER < deploy/deploy.sh
+    script: ssh ${DEPLOY_USERNAME}@$DEPLOY_SERVER < ${DEPLOY_DIR}/deploy.sh
     skip_cleanup: true
     on:
       branch: master
