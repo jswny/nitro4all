@@ -3,16 +3,14 @@ language: java
 jdk:
   - openjdk13
 
-before_install:
-  - echo $TRAVIS_SSH_KEY_TYPES
-  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H 159.65.47.132 2>&1 >> ${TRAVIS_HOME}/.ssh/known_hosts
-
 before_deploy:
   - openssl aes-256-cbc -K $encrypted_200a04de1233_key -iv $encrypted_200a04de1233_iv
     -in deploy_key.enc -out deploy_key -d
   - eval "$(ssh-agent -s)"
   - chmod 600 ./deploy_key
   - ssh-add ./deploy_key
+  - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
+  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H 159.65.47.132 2>&1 >> ${TRAVIS_HOME}/.ssh/known_hosts
   - ssh -i ./deploy_key joe@159.65.47.132 pwd
 
 deploy:
