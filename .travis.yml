@@ -11,11 +11,10 @@ before_deploy:
   - ssh-add ./deploy_key
   - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
   - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H 159.65.47.132 2>&1 >> ${TRAVIS_HOME}/.ssh/known_hosts
-  - ssh -i ./deploy_key joe@159.65.47.132 pwd
 
 deploy:
   - provider: script
-    script: ssh joe@159.65.47.132 < deploy.sh
+    script: ssh ${DEPLOY_USERNAME}@$DEPLOY_SERVER < deploy.sh
     skip_cleanup: true
     on:
       branch: master
