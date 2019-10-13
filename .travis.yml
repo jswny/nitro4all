@@ -4,6 +4,7 @@ jdk:
   - openjdk13
 
 before_install:
+  - echo $TRAVIS_SSH_KEY_TYPES
   - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H 159.65.47.132 2>&1 >> ${TRAVIS_HOME}/.ssh/known_hosts
 
 before_deploy:
