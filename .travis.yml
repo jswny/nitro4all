@@ -8,27 +8,27 @@ jdk:
 
 env:
   global:
+    - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
     - DEPLOY_DIR='deploy'
-    - REPOSITORY=$(basename $(git rev-parse --show-toplevel))
-    - DOCKER_IMAGE_TAG=$TRAVIS_BRANCH
+    - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
+    - DOCKER_IMAGE_TAG="$TRAVIS_BRANCH"
 
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_200a04de1233_key -iv $encrypted_200a04de1233_iv -in ${DEPLOY_DIR}/deploy_key.enc -out ${DEPLOY_DIR}/deploy_key -d
+  - openssl aes-256-cbc -K "$encrypted_200a04de1233_key" -iv "$encrypted_200a04de1233_iv" -in "${DEPLOY_DIR}"/deploy_key.enc -out "${DEPLOY_DIR}"/deploy_key -d
   - eval "$(ssh-agent -s)"
-  - chmod 600 ${DEPLOY_DIR}/deploy_key
-  - ssh-add ${DEPLOY_DIR}/deploy_key
-  - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
-  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $DEPLOY_SERVER 2>&1 >> ${TRAVIS_HOME}/.ssh/known_hosts
+  - chmod 600 "${DEPLOY_DIR}"/deploy_key
+  - ssh-add "${DEPLOY_DIR}"/deploy_key
+  - ssh-keyscan -t "$TRAVIS_SSH_KEY_TYPES" -H "$DEPLOY_SERVER" 2>&1 >> "${TRAVIS_HOME}"/.ssh/known_hosts
 
 deploy:
   - provider: script
-    script: bash ${DEPLOY_DIR}/docker_push.sh
+    script: bash "${DEPLOY_DIR}"/docker_push.sh
     skip_cleanup: true
     on:
       branch: master
 
   - provider: script
-    script: ssh ${DEPLOY_USERNAME}@$DEPLOY_SERVER < ${DEPLOY_DIR}/deploy.sh
+    script: ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" < "${DEPLOY_DIR}"/deploy.sh
     skip_cleanup: true
     on:
       branch: master
