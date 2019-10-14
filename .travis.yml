@@ -21,6 +21,7 @@ jobs:
   include:
     - stage: test
       language: java
+      jdk: openjdk13
     - stage: push
       script: bash "${DEPLOY_DIR}"/docker_push.sh
     - stage: deploy
