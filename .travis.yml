@@ -20,8 +20,9 @@ stages:
 jobs:
   include:
     - stage: test
-      language: java
-      jdk: openjdk13
+      script:
+        - docker build --target build --tag "$REPOSITORY" .
+        - docker run "$REPOSITORY" bash -c "$TEST_CMD"
     - stage: push
       script: bash "${DEPLOY_DIR}"/docker_push.sh
     - stage: deploy
