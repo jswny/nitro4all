@@ -9,8 +9,6 @@ env:
     - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
     - DEPLOY_DIR='deploy'
     - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
-    - DOCKER_IMAGE_TAG=$(if [ "$TRAVIS_BRANCH" = 'master' ]; then echo 'latest'; else echo "$TRAVIS_BRANCH"; fi)
-    - DOCKER_IMAGE_NAME="${DOCKER_USERNAME}"/"${REPOSITORY}":"${DOCKER_IMAGE_TAG}"
 
 before_install:
   - openssl aes-256-cbc -K "$encrypted_200a04de1233_key" -iv "$encrypted_200a04de1233_iv" -in "${DEPLOY_DIR}"/deploy_key.enc -out "${DEPLOY_DIR}"/deploy_key -d
@@ -20,8 +18,8 @@ before_install:
   - ssh-keyscan -t "$TRAVIS_SSH_KEY_TYPES" -H "$DEPLOY_SERVER" 2>&1 >> "${TRAVIS_HOME}"/.ssh/known_hosts
 
 script:
-  - docker build --target build --tag "$DOCKER_IMAGE_NAME" .
-  - docker run "$DOCKER_IMAGE_NAME" bash -c "$TEST_CMD"
+  - docker build --target build --tag "$REPOSITORY" .
+  - docker run "$REPOSITORY" bash -c "$TEST_CMD"
 
 deploy:
   - provider: script
