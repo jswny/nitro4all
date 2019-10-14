@@ -1,0 +1,9 @@
+.idea/
+deploy/
+images/
+target/
+.dockerignore
+.travis.yml
+docker-compose.yml
+Dockerfile
+readme.md

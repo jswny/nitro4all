@@ -1,5 +1,10 @@
-FROM maven:3.6-jdk-13-alpine
-WORKDIR /nitro4all
-ADD . /nitro4all
+FROM maven:3.6-jdk-13-alpine AS build
+WORKDIR /app
+ADD . /app
 RUN mvn clean install
-CMD ["java", "-jar", "target/nitro4all-1.0-SNAPSHOT-fat.jar"]
+
+FROM openjdk:13-alpine AS run
+ENV JARFILE "nitro4all-1.0-SNAPSHOT-fat.jar"
+WORKDIR /app
+COPY --from=build /app/target/${JARFILE} .
+CMD ["/bin/sh", "-c", "java -jar ${JARFILE}"]

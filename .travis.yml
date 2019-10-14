@@ -3,15 +3,18 @@ language: java
 services:
   - docker
 
-jdk:
-  - openjdk13
-
 env:
   global:
+    - TEST_CMD='mvn test -B'
     - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
     - DEPLOY_DIR='deploy'
     - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
     - DOCKER_IMAGE_TAG="$TRAVIS_BRANCH"
+    - DOCKER_IMAGE_NAME="${DOCKER_USERNAME}"/"${REPOSITORY}":"${DOCKER_IMAGE_TAG}"
+
+script:
+  - docker build --target build --tag "$DOCKER_IMAGE_NAME" .
+  - docker run "$DOCKER_IMAGE_NAME" bash -c "$TEST_CMD"
 
 before_deploy:
   - openssl aes-256-cbc -K "$encrypted_200a04de1233_key" -iv "$encrypted_200a04de1233_iv" -in "${DEPLOY_DIR}"/deploy_key.enc -out "${DEPLOY_DIR}"/deploy_key -d
