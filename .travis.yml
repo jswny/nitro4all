@@ -19,12 +19,8 @@ stages:
 
 jobs:
   include:
-    - stage: build
-      script:
     - stage: test
-      script:
-        - docker build --target build --tag "$REPOSITORY" .
-        - docker run "$REPOSITORY" bash -c "$TEST_CMD"
+      language: java
     - stage: push
       script: bash "${DEPLOY_DIR}"/docker_push.sh
     - stage: deploy
