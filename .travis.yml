@@ -10,26 +10,27 @@ env:
     - DEPLOY_DIR='deploy'
     - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
 
-before_install:
-  - openssl aes-256-cbc -K "$encrypted_200a04de1233_key" -iv "$encrypted_200a04de1233_iv" -in "${DEPLOY_DIR}"/deploy_key.enc -out "${DEPLOY_DIR}"/deploy_key -d
-  - eval "$(ssh-agent -s)"
-  - chmod 600 "${DEPLOY_DIR}"/deploy_key
-  - ssh-add "${DEPLOY_DIR}"/deploy_key
-  - ssh-keyscan -t "$TRAVIS_SSH_KEY_TYPES" -H "$DEPLOY_SERVER" 2>&1 >> "${TRAVIS_HOME}"/.ssh/known_hosts
+stages:
+  - build
+  - test
+  - name: push
+    if: branch = master
+  - name: deploy
+    if: branch = master
 
-script:
-  - docker build --target build --tag "$REPOSITORY" .
-  - docker run "$REPOSITORY" bash -c "$TEST_CMD"
-
-deploy:
-  - provider: script
-    script: bash "${DEPLOY_DIR}"/docker_push.sh
-    skip_cleanup: true
-    on:
-      branch: master
-
-  - provider: script
-    script: ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" < "${DEPLOY_DIR}"/deploy.sh
-    skip_cleanup: true
-    on:
-      branch: master
+jobs:
+  include:
+    - stage: build
+      script: docker build --target build --tag "$REPOSITORY" .
+    - stage: test
+      script: docker run "$REPOSITORY" bash -c "$TEST_CMD"
+    - stage: push
+      script: bash "${DEPLOY_DIR}"/docker_push.sh
+    - stage: deploy
+      script: ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" < "${DEPLOY_DIR}"/deploy.sh
+      before_install:
+        - openssl aes-256-cbc -K "$encrypted_200a04de1233_key" -iv "$encrypted_200a04de1233_iv" -in "${DEPLOY_DIR}"/deploy_key.enc -out "${DEPLOY_DIR}"/deploy_key -d
+        - eval "$(ssh-agent -s)"
+        - chmod 600 "${DEPLOY_DIR}"/deploy_key
+        - ssh-add "${DEPLOY_DIR}"/deploy_key
+        - ssh-keyscan -t "$TRAVIS_SSH_KEY_TYPES" -H "$DEPLOY_SERVER" 2>&1 >> "${TRAVIS_HOME}"/.ssh/known_hosts
