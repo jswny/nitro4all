@@ -9,7 +9,7 @@ env:
     - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
     - DEPLOY_DIR='deploy'
     - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
-    - DOCKER_IMAGE_TAG="$TRAVIS_BRANCH"
+    - DOCKER_IMAGE_TAG=$(if [ "$TRAVIS_BRANCH" = 'master' ]; then echo 'latest'; else echo "$TRAVIS_BRANCH"; fi)
     - DOCKER_IMAGE_NAME="${DOCKER_USERNAME}"/"${REPOSITORY}":"${DOCKER_IMAGE_TAG}"
 
 before_install:
