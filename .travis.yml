@@ -21,7 +21,6 @@ jobs:
   include:
     - stage: test
       script:
-        - ls -l "${TRAVIS_BUILD_DIR}"/"${DEPLOY_DIR}"
         - docker build --target build --tag "$REPOSITORY" .
         - docker run "$REPOSITORY" bash -c "$TEST_CMD"
     - stage: push
