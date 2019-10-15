@@ -10,7 +10,7 @@ env:
     - DEPLOY_ARTIFACTS_DIR='deploy'
     - DEPLOY_ROOT_DIR='/srv'
     - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
-    - DOCKER_IMAGE_TAG=$(bash generate_docker_image_tag.sh)
+    - DOCKER_IMAGE_TAG=$(bash "${DEPLOY_ARTIFACTS_DIR}"/generate_docker_image_tag.sh)
     - DOCKER_IMAGE_NAME="${DOCKER_USERNAME}"/"${REPOSITORY}":"${DOCKER_IMAGE_TAG}"
 
 before_deploy:
