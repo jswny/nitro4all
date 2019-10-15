@@ -10,7 +10,9 @@ env:
     - DEPLOY_DIR='deploy'
     - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
 
-before_install: bash "${DEPLOY_DIR}"/setup_ssh.sh
+before_install:
+  - eval "$(ssh-agent -s)"
+  - bash "${DEPLOY_DIR}"/setup_ssh.sh
 
 script:
   - docker build --target build --tag "$REPOSITORY" .
