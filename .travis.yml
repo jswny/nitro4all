@@ -29,7 +29,7 @@ deploy:
       branch: master
 
   - provider: script
-    script: ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" < "${DEPLOY_ARTIFACTS_DIR}"/deploy.sh
+    script: bash "${DEPLOY_ARTIFACTS_DIR}"/deploy.sh
     skip_cleanup: true
     on:
       branch: master
