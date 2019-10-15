@@ -1,4 +1,4 @@
-# Nitro4All
+# Nitro4All [![Build Status](https://travis-ci.com/jswny/nitro4all.svg?branch=master)](https://travis-ci.com/jswny/nitro4all)
 Nitro4All is a Discord bot which allows all users to use Nitro (animated) emojis. It will react to any message containing a Nitro-only emoji from a user who does not have Nitro with the emoji itself.
 
 Nito4All only works with Nitro emojis from the server in which the message it is reacting to had been sent.
