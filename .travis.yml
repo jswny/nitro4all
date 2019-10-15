@@ -17,7 +17,7 @@ before_deploy:
   - eval "$(ssh-agent -s)"
   - bash "${DEPLOY_ARTIFACTS_DIR}"/setup_ssh.sh
 
-script:
+script:`
   - echo "travis_fold:start:SCRIPT"
   - docker build --target build --tag "$REPOSITORY" .
   - docker run "$REPOSITORY" bash -c "$TEST_CMD"
@@ -29,6 +29,12 @@ deploy:
     skip_cleanup: true
     on:
       branch: master
+
+  - provider: script
+    script: bash "${DEPLOY_ARTIFACTS_DIR}"/docker_push.sh
+    skip_cleanup: true
+    on:
+      tags: true
 
   - provider: script
     script: bash "${DEPLOY_ARTIFACTS_DIR}"/deploy.sh
