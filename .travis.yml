@@ -18,8 +18,10 @@ before_deploy:
   - bash "${DEPLOY_ARTIFACTS_DIR}"/setup_ssh.sh
 
 script:
+  - echo "travis_fold:start:SCRIPT"
   - docker build --target build --tag "$REPOSITORY" .
   - docker run "$REPOSITORY" bash -c "$TEST_CMD"
+  - echo "travis_fold:end:SCRIPT"
 
 deploy:
   - provider: script
