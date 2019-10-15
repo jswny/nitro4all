@@ -8,7 +8,13 @@ else
 fi
 
 DISCORD_TOKEN_VARIABLE="DISCORD_TOKEN_${DEPLOY_VARIANT}"
-DISCORD_TOKEN="${DISCORD_TOKEN_VARIABLE}"
+DISCORD_TOKEN=$(echo "${DISCORD_TOKEN_VARIABLE}" | tr [:lower:] [:upper:])
+
+if [ -z "$DISCORD_TOKEN" ]
+then
+  echo '$DISCORD_TOKEN is empty! Exiting...'
+  exit 1
+fi
 
 DEPLOY_DIR="${DEPLOY_ROOT_DIR}"/"${REPOSITORY}"-"$DEPLOY_VARIANT"
 
