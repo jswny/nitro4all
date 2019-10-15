@@ -29,4 +29,4 @@ jobs:
       script:
         - docker build --tag "$REPOSITORY" .
         - ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" < "${DEPLOY_DIR}"/deploy.sh
-      before_install: bash "${DEPLOY_DIR}"/docker_push.sh
+      before_install: bash "${DEPLOY_DIR}"/setup_ssh.sh
