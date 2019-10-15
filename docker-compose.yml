@@ -1,8 +1,8 @@
 version: "3"
 services:
   bot:
-    image: nitro4all
-    container_name: nitro4all
+    image: "jswny/nitro4all:${TAG}"
+    container_name: "nitro4all-${TAG}"
     build: .
-    env_file:
-      - release.env
+    environment:
+      - DISCORD_TOKEN

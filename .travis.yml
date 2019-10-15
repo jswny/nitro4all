@@ -7,12 +7,15 @@ env:
   global:
     - TEST_CMD='mvn test -B'
     - TRAVIS_SSH_KEY_TYPES='rsa,dsa,ecdsa'
-    - DEPLOY_DIR='deploy'
+    - DEPLOY_ARTIFACTS_DIR='deploy'
+    - DEPLOY_ROOT_DIR='/srv'
     - REPOSITORY=$(basename "$TRAVIS_REPO_SLUG")
+    - DOCKER_IMAGE_TAG=$(bash generate_docker_image_tag.sh)
+    - DOCKER_IMAGE_NAME="${DOCKER_USERNAME}"/"${REPOSITORY}":"${DOCKER_IMAGE_TAG}"
 
-before_install:
+before_deploy:
   - eval "$(ssh-agent -s)"
-  - bash "${DEPLOY_DIR}"/setup_ssh.sh
+  - bash "${DEPLOY_ARTIFACTS_DIR}"/setup_ssh.sh
 
 script:
   - docker build --target build --tag "$REPOSITORY" .
@@ -20,13 +23,13 @@ script:
 
 deploy:
   - provider: script
-    script: bash "${DEPLOY_DIR}"/docker_push.sh
+    script: bash "${DEPLOY_ARTIFACTS_DIR}"/docker_push.sh
     skip_cleanup: true
     on:
       branch: master
 
   - provider: script
-    script: ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" < "${DEPLOY_DIR}"/deploy.sh
+    script: ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" < "${DEPLOY_ARTIFACTS_DIR}"/deploy.sh
     skip_cleanup: true
     on:
       branch: master
