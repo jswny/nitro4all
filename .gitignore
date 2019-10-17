@@ -73,3 +73,6 @@ fabric.properties
 
 # Maven
 target/
+
+# Docker environment secrets
+.env

@@ -1,5 +1,7 @@
-version: "3"
+version: '3'
 services:
   bot:
     image: "jswny/nitro4all:${TAG}"
     container_name: "nitro4all-${TAG}"
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
