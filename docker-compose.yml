@@ -3,6 +3,3 @@ services:
   bot:
     image: "jswny/nitro4all:${TAG}"
     container_name: "nitro4all-${TAG}"
-    build: .
-    environment:
-      - DISCORD_TOKEN
