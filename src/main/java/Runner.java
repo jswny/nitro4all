@@ -5,10 +5,15 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.*;
 import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.object.util.Permission;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Runner {
     public static void main(String[] args) {
@@ -38,32 +43,27 @@ public class Runner {
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
                 .filter(Runner::isMessageInGuild)
-                .filter(Runner::isAdmin)
-                .filter(msg -> msg.getContent().map("/n4a nitrocheck toggle"::equals).orElse(false))
-                .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage("Nitro checking for users is now: " + state.toggleNitroCheck()))
-                .subscribe();
-
-        client.getEventDispatcher().on(MessageCreateEvent.class)
-                .map(MessageCreateEvent::getMessage)
-                .filter(Runner::isMessageInGuild)
-                .filter(Runner::isAdmin)
-                .filter(msg -> msg.getContent().map("/n4a enabled toggle"::equals).orElse(false))
-                .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage("Nitro4All enabled is now: " + state.toggleEnabled()))
-                .subscribe();
-
-        client.getEventDispatcher().on(MessageCreateEvent.class)
-                .map(MessageCreateEvent::getMessage)
-                .filter(Runner::isMessageInGuild)
                 .filter(msg -> state.getEnabled())
                 .filter(msg -> !state.getNitroCheck() || !isMemberNitro(msg))
                 .map(Runner::buildMessageEmojiTuple)
                 .filter(Runner::doesMessageEmojiTupleContainNitroEmoji)
                 .flatMap(Runner::reactWithNitroEmojis)
                 .subscribe();
+
+        registerStateToggleHandler(client, "enabled", state::toggleEnabled);
+        registerStateToggleHandler(client, "nitrocheck", state::toggleNitroCheck);
     }
 
+    static Disposable registerStateToggleHandler(DiscordClient client, String name, BooleanSupplier toggleFn) {
+        client.getEventDispatcher().on(MessageCreateEvent.class)
+                .map(MessageCreateEvent::getMessage)
+                .filter(Runner::isMessageInGuild)
+                .filter(Runner::isAdmin)
+                .filter(msg -> msg.getContent().map(("/n4a " + name + " toggle")::equals).orElse(false))
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage("Nitro4All " + name + " is now: " + toggleFn.getAsBoolean()))
+                .subscribe();
+    }
 
     static boolean isMessageInGuild(Message msg) {
         boolean result = msg
