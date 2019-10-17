@@ -1,9 +1,23 @@
 # Nitro4All [![Build Status](https://travis-ci.com/jswny/nitro4all.svg?branch=master)](https://travis-ci.com/jswny/nitro4all)
-Nitro4All is a Discord bot which allows all users to use Nitro (animated) emojis. It will react to any message containing a Nitro-only emoji from a user who does not have Nitro with the emoji itself.
+Nitro4All is a Discord bot which allows all users to use Nitro (animated) emojis.
+
+It will react to any message containing a Nitro-only emoji from a user who does not have Nitro with the emoji itself.
 
 Nito4All only works with Nitro emojis from the server in which the message it is reacting to had been sent.
 
 ![Demo GIF](images/demo.gif)
+
+## Features
+- Drop-in functionality (no configuration needed, just invite and go)
+- Doesn't require any special syntax (uses normal Discord emoji syntax)
+- Allows users to still use the built-in Discord emoji selection features
+- Requires minimal permissions
+
+## Permissions
+Nitro4All requires the following permissions:
+1. `Send Messages` - for sending messages in response to commands (see below)
+2. `Add Reactions` - for adding animated reactions to messages (core functionality)
+3. `Read Message History` - necessary in order for adding reactions to function properly. Without this, the bot cannot see the message it needs to react to.
 
 ## Clyde Bot
 Since users without Nitro cannot use Nitro emojis directly, they may sometimes get messages from the built-in Discord bot named "Clyde". There is no way to disable this.
@@ -52,7 +66,15 @@ To run Nitro4All with Docker you must have the following dependencies installed:
 - Docker
 
 You can run the bot as follows:
-1. Bring the bot up with Docker Compose including your Discord token:
+1. Create an `.env` file with the required environment variables which are:
+  1. The tag for the image that Docker Compose should use (equivalent to `docker pull jswny/nitro4all:${TAG}`)
+  2. Your Discord token.
 ```sh
-DISCORD_TOKEN=<TOKEN> docker-compose up -d
+TAG=latest
+DISCORD_TOKEN=<TOKEN>
+```
+  - **Note:** you can also pass these in manually from the command line the same way as shown for previous run configurations.
+2. Bring the bot up with Docker Compose:
+```sh
+docker-compose up -d
 ```
