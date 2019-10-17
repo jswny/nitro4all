@@ -55,7 +55,7 @@ public class Runner {
     }
 
     static Disposable registerStateToggleHandler(DiscordClient client, String name, BooleanSupplier toggleFn) {
-        client.getEventDispatcher().on(MessageCreateEvent.class)
+        return client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
                 .filter(Runner::isMessageInGuild)
                 .filter(Runner::isAdmin)
