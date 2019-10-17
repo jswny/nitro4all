@@ -16,14 +16,14 @@ then
   exit 1
 fi
 
-DEPLOY_DIR="${DEPLOY_ROOT_DIR}"/"${REPOSITORY}"-"$DEPLOY_VARIANT"
+DEPLOY_DIR="${DEPLOY_ROOT_DIR}"/"${REPOSITORY}"_"$DEPLOY_VARIANT"
 
 ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" mkdir "$DEPLOY_DIR"
 
 scp docker-compose.yml "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER":"$DEPLOY_DIR"
 
 echo "DISCORD_TOKEN=${DISCORD_TOKEN}" >> ".env"
-echo "TAG=${TAG}" >> ".env"
+echo "TAG=${DOCKER_IMAGE_TAG}" >> ".env"
 scp ".env" "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER":"$DEPLOY_DIR"
 
 ssh "${DEPLOY_USERNAME}"@"$DEPLOY_SERVER" "docker pull '${DOCKER_IMAGE_NAME}'"
