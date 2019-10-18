@@ -27,11 +27,11 @@ public class MessageEmoijTuple {
         return tuple2
                 .getT1()
                 .getContent()
-                .map(content -> emojiIdentifiers.any(emojiIdentifier -> content.contains(emojiIdentifier)).block())
+                .map(content -> emojiIdentifiers.any(content::contains).block())
                 .orElse(false);
     }
 
-    public static boolean doesMessageContainEmoji(GuildEmoji emoji, Tuple2<Message, Flux<GuildEmoji>> tuple2) {
+    private static boolean doesMessageContainEmoji(GuildEmoji emoji, Tuple2<Message, Flux<GuildEmoji>> tuple2) {
         var result = tuple2
                 .getT1()
                 .getContent()
@@ -41,10 +41,21 @@ public class MessageEmoijTuple {
         return result;
     }
 
-    public static Flux<Void> reactWithNitroEmojis(Tuple2<Message, Flux<GuildEmoji>> tuple2) {
+    public static Flux<Void> reactWithNitroEmojisFromMessage(Tuple2<Message, Flux<GuildEmoji>> tuple2) {
+        Flux<GuildEmoji> emojiFlux = tuple2
+                .getT2()
+                .filter(emoji -> doesMessageContainEmoji(emoji, tuple2));
+
+        Tuple2<Message, Flux<GuildEmoji>> newTuple = Tuples.of(tuple2.getT1(), emojiFlux);
+
+        Flux<Void> result = reactWithEmojis(newTuple);
+
+        return result;
+    }
+
+    public static Flux<Void> reactWithEmojis(Tuple2<Message, Flux<GuildEmoji>> tuple2) {
         Flux<Void> result = tuple2
                 .getT2()
-                .filter(emoji -> doesMessageContainEmoji(emoji, tuple2))
                 .flatMap(emoji -> tuple2.getT1().addReaction(ReactionEmoji.custom(emoji)));
 
         return result;
