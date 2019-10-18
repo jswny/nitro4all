@@ -1,3 +1,5 @@
+package io.j1.nitro4all.bot;
+
 public class State {
     private boolean nitroCheck = true;
     private boolean enabled = true;
